@@ -231,13 +231,9 @@ Another interesting case is when there are no datapoints inside or to the left o
 
 ### Performance impact
 
-< TODO: PromQL engine will have to propagate ST values to `rate`-like functions, which will consume extra memory. It would be best that the memory usage would be minimized for timeseries which doesn't have start timestamps, or if start timestamp feature flag is not enabled at all. >
+For proposed functionality to work, PromQL engine will have to read and propagate start timestamp values. These values could be placed in `FPoint` and `HPoint` structs, so that they could be carried together with sample timestamp and value. However, this would increase memory usage, even in situations where start timestamp support in PromQL is disabled, or when the PromQL functions used in the query don't use start timestamps. Thus, an alternative approach is chosen, where start timestamp values are kept in a separate array. This allows to keep the array empty when start timestamps are not used, thus avoiding unnecessary memory consumption.
 
-> TODO: Explain the full overview of the proposed solution. Some guidelines:
-> * Make it concise and **simple**; put diagrams; be concrete, avoid using “really”, “amazing” and “great” (:
-> * How you will test and verify?
-> * How you will migrate users, without downtime. How we solve incompatibilities?
-> * What open questions are left? (“Known unknowns”)
+Regarding CPU usage impact, start timestamp reset detection consists of several comparisons of `int64` values. While this is extra work, the calculations are fairly simple and should not add too much to CPU usage. In some cases it might even be an efficiency gain, because it could potentially substitute histogram reset detection, which is quite expensive for bigger histograms.
 
 ## Alternatives
 
@@ -245,4 +241,7 @@ The ["OTEL delta temporality support"](https://github.com/prometheus/proposals/p
 
 ## Action Plan
 
-* [ ] Task one `<GH issue>`
+* [X] Implement start timestamp support in `rate`-like functions for detecting resets between datapoints [PR #18344](https://github.com/prometheus/prometheus/pull/18344)
+* [X] Use start timestamp as an alternative for rate extrapolation [PR #18619](https://github.com/prometheus/prometheus/pull/18619)
+* [X] Implement start timestamp support in `resets()` function [PR #18627](https://github.com/prometheus/prometheus/pull/18627)
+* [ ] Implement start timestamp support for extended rate [PR #18966](https://github.com/prometheus/prometheus/pull/18966)
