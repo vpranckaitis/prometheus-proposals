@@ -128,8 +128,8 @@ type datapoint struct {
 }
 
 func detectResetFromStartTimestamp(prev, curr datapoint) bool {
-    if curr.ST == 0 || curr.ST > curr.T {
-        // Unknown or invalid start time.
+    if prev.ST == curr.ST || curr.ST == 0 || curr.ST >= curr.T {
+        // Start time has not changed, is unknown or is invalid.
         return false
     }
 
