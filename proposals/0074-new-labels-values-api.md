@@ -4,7 +4,7 @@
   * Ismail Simsek [@itsmylife](https://github.com/itsmylife) ismail.simsek@grafana.com
   * Andrew Hall [@tcp13equals2](https://github.com/tcp13equals2) andrew.hall@grafana.com
 
-* **Implementation Status:** Not implemented
+* **Implementation Status:** Implemented
 
 * **Related Issues and PRs:**
 
